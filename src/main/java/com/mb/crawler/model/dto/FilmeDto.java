@@ -1,20 +1,18 @@
 package com.mb.crawler.model.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FilmeDto {
     private String titulo;
     private String wikipediaUrl;
     private int duracaoEmMinutos;
     private String resumo;
-    private String genero;
+    private List<String> genero;
 
-    public FilmeDto(String titulo, String wikipediaUrl, int duracaoEmMinutos, String resumo, String genero) {
-        this.titulo = titulo;
-        this.wikipediaUrl = wikipediaUrl;
-        this.duracaoEmMinutos = duracaoEmMinutos;
-        this.resumo = resumo;
-        this.genero = genero;
+    public FilmeDto() {
+        this.duracaoEmMinutos = -1;
     }
-
 
     public String getTitulo() {
         return titulo;
@@ -48,11 +46,11 @@ public class FilmeDto {
         this.resumo = resumo;
     }
 
-    public String getGenero() {
+    public List<String> getGenero() {
         return genero;
     }
 
-    public void setGenero(String genero) {
+    public void setGenero(List<String> genero) {
         this.genero = genero;
     }
 }
