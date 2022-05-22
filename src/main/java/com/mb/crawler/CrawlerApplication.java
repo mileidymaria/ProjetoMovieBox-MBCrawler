@@ -1,11 +1,12 @@
 package com.mb.crawler;
 
 import com.mb.crawler.crawler.FilmeCrawler;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import com.mb.crawler.model.dto.FilmeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.Set;
 
 @SpringBootApplication
 public class CrawlerApplication {
@@ -14,7 +15,7 @@ public class CrawlerApplication {
 	static FilmeCrawler filmeCrawler;
 	public static void main(String[] args) {
 		SpringApplication.run(CrawlerApplication.class, args);
-		filmeCrawler.crawl();
+		Set<FilmeDto> filmes = filmeCrawler.crawlMovies();
 	}
 
 }
