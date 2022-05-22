@@ -23,10 +23,9 @@ import static com.mb.crawler.util.Util.generateStringHash;
 
 @Crawler
 public class FilmeCrawler {
-    private static final String url = "https://pt.wikipedia.org/wiki/Categoria:Filmes_dos_Estados_Unidos_de_";
     private static final Logger logger = LoggerFactory.getLogger(FilmeCrawler.class);
 
-    public static Set<FilmeDto> crawlMovies(){
+    public Set<FilmeDto> crawlMovies(){
         String urlUSA = "https://pt.wikipedia.org/wiki/Categoria:Filmes_dos_Estados_Unidos_de_";
         String urlBRA = "https://pt.wikipedia.org/wiki/Categoria:Filmes_do_Brasil_de_";
         String urlOriginaisNetflix = "https://pt.wikipedia.org/wiki/Categoria:Filmes_originais_da_Netflix";
@@ -49,7 +48,7 @@ public class FilmeCrawler {
         return filmes;
     }
 
-    private static Set<FilmeDto> crawl(String url){
+    private Set<FilmeDto> crawl(String url){
         WebDriver driver = new HtmlUnitDriver();
         driver.get(url);
 
@@ -105,7 +104,7 @@ public class FilmeCrawler {
         return filmes;
     }
 
-    private static List<AtorDto> getElenco (WebElement td){
+    private List<AtorDto> getElenco (WebElement td){
         List<AtorDto> atores = new ArrayList<>();
         List<WebElement> elenco = td.findElements(By.tagName("a"));
         for(WebElement ator : elenco){
@@ -114,7 +113,7 @@ public class FilmeCrawler {
         return atores;
     }
 
-    private static List<String> getGenero (WebElement td){
+    private List<String> getGenero (WebElement td){
         List<String> generos = new ArrayList<>();
         List<WebElement> links = td.findElements(By.tagName("a"));
         for(WebElement a : links){
@@ -123,7 +122,7 @@ public class FilmeCrawler {
         return generos;
     }
 
-    private static int getDuracao (WebElement tr){
+    private int getDuracao (WebElement tr){
         String pattern = "[0-9] min";
         Pattern pCompile = Pattern.compile(pattern);
         List<WebElement> ths = tr.findElements(By.tagName("th"));

@@ -8,9 +8,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Util {
-    public static void main(String[] args) {
-        generateStringHash("Vingadores ultimato e etc etc etcrreer ertettr htyty NSAJISAIBASB");
-    }
+
     public static int generateStringHash(String str){
         int hash = 0;
         try {

@@ -11,11 +11,8 @@ import java.util.Set;
 @SpringBootApplication
 public class CrawlerApplication {
 
-	@Autowired
-	static FilmeCrawler filmeCrawler;
 	public static void main(String[] args) {
 		SpringApplication.run(CrawlerApplication.class, args);
-		Set<FilmeDto> filmes = filmeCrawler.crawlMovies();
 	}
 
 }
