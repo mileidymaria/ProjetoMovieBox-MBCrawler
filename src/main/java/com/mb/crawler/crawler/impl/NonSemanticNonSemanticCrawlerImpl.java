@@ -1,8 +1,8 @@
-package com.mb.crawler.crawler;
+package com.mb.crawler.crawler.impl;
 
-import com.mb.crawler.annotation.Crawler;
-import com.mb.crawler.model.dto.AtorDto;
-import com.mb.crawler.model.dto.FilmeDto;
+import com.mb.crawler.crawler.NonSemanticCrawler;
+import com.mb.crawler.model.dto.ActorDto;
+import com.mb.crawler.model.dto.MovieDto;
 import com.mb.crawler.util.Util;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -21,18 +21,19 @@ import java.util.regex.Pattern;
 import static com.mb.crawler.util.Nlp.removerAcentos;
 import static com.mb.crawler.util.Util.generateStringHash;
 
-@Crawler
-public class FilmeCrawler {
-    private static final Logger logger = LoggerFactory.getLogger(FilmeCrawler.class);
+@com.mb.crawler.annotation.Crawler
+public class NonSemanticNonSemanticCrawlerImpl implements NonSemanticCrawler {
+    private static final Logger logger = LoggerFactory.getLogger(NonSemanticNonSemanticCrawlerImpl.class);
 
-    public Set<FilmeDto> crawlMovies(){
+    @Override
+    public Set<MovieDto> crawl(){
         String urlUSA = "https://pt.wikipedia.org/wiki/Categoria:Filmes_dos_Estados_Unidos_de_";
         String urlBRA = "https://pt.wikipedia.org/wiki/Categoria:Filmes_do_Brasil_de_";
         String urlOriginaisNetflix = "https://pt.wikipedia.org/wiki/Categoria:Filmes_originais_da_Netflix";
         String urlDistribuidosNetflix = "https://pt.wikipedia.org/wiki/Categoria:Filmes_distribu%C3%ADdos_pela_Netflix";
         String urlFilmesSuperHerois = "https://pt.wikipedia.org/wiki/Categoria:Filmes_de_super-her%C3%B3is";
 
-        Set<FilmeDto> filmes = new HashSet<>();
+        Set<MovieDto> filmes = new HashSet<>();
         int anoAtual = LocalDate.now().getYear();
         logger.info("CRAWLER MONITOR ->  Ínicio da crawleagem "+ LocalDateTime.now().toString());
         while (anoAtual >= 2000){
@@ -48,12 +49,12 @@ public class FilmeCrawler {
         return filmes;
     }
 
-    private Set<FilmeDto> crawl(String url){
+    private Set<MovieDto> crawl(String url){
         WebDriver driver = new HtmlUnitDriver();
         driver.get(url);
 
         Map<String, String> links = new ConcurrentHashMap<>();
-        Set<FilmeDto> filmes = new HashSet<>();
+        Set<MovieDto> filmes = new HashSet<>();
         List<WebElement> elLinksFilmes = driver.findElements(By.cssSelector(".mw-category-group ul li a"));
 
         for(WebElement el : elLinksFilmes){
@@ -73,11 +74,11 @@ public class FilmeCrawler {
                 continue;
             }
 
-            FilmeDto dto = new FilmeDto();
+            MovieDto dto = new MovieDto();
             dto.setHashLink(Util.generateStringHash(link.getValue()));
             dto.setTitulo(link.getKey());
             dto.setResumo(driver.findElement(By.cssSelector(".mw-parser-output p")).getText());
-            dto.setWikipediaUrl(link.getValue());
+            dto.setUrl(link.getValue());
 
             List<WebElement> trs = driver.findElement(By.id("mw-content-text"))
                     .findElement(By.cssSelector(".mw-parser-output"))
@@ -93,7 +94,7 @@ public class FilmeCrawler {
                     dto.setGenero(generos);
                 }
                 if(dto.getGenero() == null && tr.findElements(By.tagName("td")).size() >= 2 &&!tr.getText().equals("") && removerAcentos(tr.getText()).startsWith("Elenco")){
-                    List<AtorDto> elenco = getElenco(tr.findElements(By.tagName("td")).get(1));
+                    List<ActorDto> elenco = getElenco(tr.findElements(By.tagName("td")).get(1));
                     dto.setElenco(elenco);
                 }
             }
@@ -104,11 +105,11 @@ public class FilmeCrawler {
         return filmes;
     }
 
-    private List<AtorDto> getElenco (WebElement td){
-        List<AtorDto> atores = new ArrayList<>();
+    private List<ActorDto> getElenco (WebElement td){
+        List<ActorDto> atores = new ArrayList<>();
         List<WebElement> elenco = td.findElements(By.tagName("a"));
         for(WebElement ator : elenco){
-            atores.add(new AtorDto(ator.getText(),generateStringHash(removerAcentos(ator.getText()))));
+            atores.add(new ActorDto(ator.getText(),generateStringHash(removerAcentos(ator.getText()))));
         }
         return atores;
     }

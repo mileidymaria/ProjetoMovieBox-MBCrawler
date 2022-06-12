@@ -3,16 +3,16 @@ package com.mb.crawler.model.dto;
 import java.util.List;
 import java.util.Objects;
 
-public class FilmeDto {
+public class MovieDto {
     private int hashLink;
     private String titulo;
-    private String wikipediaUrl;
+    private String url;
     private int duracaoEmMinutos;
     private String resumo;
     private List<String> genero;
-    private List<AtorDto> elenco;
+    private List<ActorDto> elenco;
 
-    public FilmeDto() {
+    public MovieDto() {
         this.duracaoEmMinutos = -1;
     }
 
@@ -32,12 +32,12 @@ public class FilmeDto {
         this.titulo = titulo;
     }
 
-    public String getWikipediaUrl() {
-        return wikipediaUrl;
+    public String getUrl() {
+        return url;
     }
 
-    public void setWikipediaUrl(String wikipediaUrl) {
-        this.wikipediaUrl = wikipediaUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public int getDuracaoEmMinutos() {
@@ -64,24 +64,24 @@ public class FilmeDto {
         this.genero = genero;
     }
 
-    public List<AtorDto> getElenco() {
+    public List<ActorDto> getElenco() {
         return elenco;
     }
 
-    public void setElenco(List<AtorDto> elenco) {
+    public void setElenco(List<ActorDto> elenco) {
         this.elenco = elenco;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FilmeDto)) return false;
-        FilmeDto filmeDto = (FilmeDto) o;
-        return getWikipediaUrl().equals(filmeDto.getWikipediaUrl());
+        if (!(o instanceof MovieDto)) return false;
+        MovieDto movieDto = (MovieDto) o;
+        return getUrl().equals(movieDto.getUrl());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getWikipediaUrl());
+        return Objects.hash(getUrl());
     }
 }

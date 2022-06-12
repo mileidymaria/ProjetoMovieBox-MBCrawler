@@ -1,11 +1,11 @@
 package com.mb.crawler.model.dto;
 
 
-public class AtorDto {
+public class ActorDto {
     private String nome;
     private int hashNome;
 
-    public AtorDto(String nome, int hashNome) {
+    public ActorDto(String nome, int hashNome) {
         this.nome = nome;
         this.hashNome = hashNome;
     }
