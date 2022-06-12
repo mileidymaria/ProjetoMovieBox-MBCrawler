@@ -1,8 +1,5 @@
 package com.mb.crawler.util;
 
-import com.mb.crawler.CrawlerApplication;
-import org.springframework.boot.SpringApplication;
-
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -20,5 +17,22 @@ public class Util {
             e.printStackTrace();
         }
         return hash;
+    }
+
+    public static String capitalize(String str){
+        if(str == null || !isAlphabetic(str)){
+            return null;
+        }
+        return str.substring(0,1).toUpperCase() + str.substring(1);
+    }
+
+    public static boolean isAlphabetic(String str){
+        if(str == null){
+            return false;
+        }
+        if(str.matches("[a-zA-Z]+")){
+            return true;
+        }
+        return false;
     }
 }

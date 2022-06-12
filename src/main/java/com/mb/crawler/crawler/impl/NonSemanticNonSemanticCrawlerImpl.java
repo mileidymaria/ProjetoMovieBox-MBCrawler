@@ -1,5 +1,6 @@
 package com.mb.crawler.crawler.impl;
 
+import com.mb.crawler.annotation.Crawler;
 import com.mb.crawler.crawler.NonSemanticCrawler;
 import com.mb.crawler.model.dto.ActorDto;
 import com.mb.crawler.model.dto.MovieDto;
@@ -21,31 +22,36 @@ import java.util.regex.Pattern;
 import static com.mb.crawler.util.Nlp.removerAcentos;
 import static com.mb.crawler.util.Util.generateStringHash;
 
-@com.mb.crawler.annotation.Crawler
+@Crawler
 public class NonSemanticNonSemanticCrawlerImpl implements NonSemanticCrawler {
     private static final Logger logger = LoggerFactory.getLogger(NonSemanticNonSemanticCrawlerImpl.class);
+    private static final String URL_USA = "https://pt.wikipedia.org/wiki/Categoria:Filmes_dos_Estados_Unidos_de_";
+    private static final String URL_BRA = "https://pt.wikipedia.org/wiki/Categoria:Filmes_do_Brasil_de_";
+    private static final String URL_CA = "https://pt.wikipedia.org/wiki/Categoria:Filmes_do_Canadá_de_";
+    private static final String URL_ES = "https://pt.wikipedia.org/wiki/Categoria:Filmes_da_Espanha_de_2021";
+    private static final String URL_ORIGINAIS_NETFLIX = "https://pt.wikipedia.org/wiki/Categoria:Filmes_originais_da_Netflix";
+    private static final String URL_DISTRIBUIDOS_NETFLIX = "https://pt.wikipedia.org/wiki/Categoria:Filmes_distribu%C3%ADdos_pela_Netflix";
+    private static final String URL_FILMES_SUPER_HEROI = "https://pt.wikipedia.org/wiki/Categoria:Filmes_de_super-her%C3%B3is";
 
     @Override
     public Set<MovieDto> crawl(){
-        String urlUSA = "https://pt.wikipedia.org/wiki/Categoria:Filmes_dos_Estados_Unidos_de_";
-        String urlBRA = "https://pt.wikipedia.org/wiki/Categoria:Filmes_do_Brasil_de_";
-        String urlOriginaisNetflix = "https://pt.wikipedia.org/wiki/Categoria:Filmes_originais_da_Netflix";
-        String urlDistribuidosNetflix = "https://pt.wikipedia.org/wiki/Categoria:Filmes_distribu%C3%ADdos_pela_Netflix";
-        String urlFilmesSuperHerois = "https://pt.wikipedia.org/wiki/Categoria:Filmes_de_super-her%C3%B3is";
-
         Set<MovieDto> filmes = new HashSet<>();
         int anoAtual = LocalDate.now().getYear();
-        logger.info("CRAWLER MONITOR ->  Ínicio da crawleagem "+ LocalDateTime.now().toString());
-        while (anoAtual >= 2000){
-            filmes.addAll(crawl(urlUSA+anoAtual));
-            filmes.addAll(crawl(urlBRA+anoAtual));
-            filmes.addAll(crawl(urlOriginaisNetflix));
-            filmes.addAll(crawl(urlDistribuidosNetflix));
-            filmes.addAll(crawl(urlFilmesSuperHerois));
-            logger.info("CRAWLER MONITOR -> Ano: "+ anoAtual + " com " + filmes.size() + " filmes crawleados (acumulando os anos anteiores)");
+        logger.info("Início da crawleagem "+ LocalDateTime.now().toString());
+
+        while (anoAtual >= 1990){
+            filmes.addAll(crawl(URL_USA +anoAtual));
+            filmes.addAll(crawl(URL_BRA +anoAtual));
+            filmes.addAll(crawl(URL_CA +anoAtual));
+            filmes.addAll(crawl(URL_ES +anoAtual));
+            filmes.addAll(crawl(URL_ORIGINAIS_NETFLIX));
+            filmes.addAll(crawl(URL_DISTRIBUIDOS_NETFLIX));
+            filmes.addAll(crawl(URL_FILMES_SUPER_HEROI));
+            logger.info("Ano: "+ anoAtual + " com " + filmes.size() + " filmes crawleados (acumulando os anos anteiores)");
             anoAtual--;
         }
-        logger.info("CRAWLER MONITOR -> Fim "+ LocalDateTime.now().toString() +", com um total de " + filmes.size() + " filmes crawleados.");
+
+        logger.info("Fim "+ LocalDateTime.now().toString() +", com um total de " + filmes.size() + " filmes crawleados.");
         return filmes;
     }
 
@@ -65,12 +71,10 @@ public class NonSemanticNonSemanticCrawlerImpl implements NonSemanticCrawler {
             driver.get(link.getValue());
 
             try{
-                driver.findElement(By.id("mw-content-text"))
-                        .findElement(By.cssSelector(".mw-parser-output"))
-                        .findElement(By.cssSelector(".infobox"));
+                driver.findElement(By.id("mw-content-text")).findElement(By.cssSelector(".mw-parser-output")).findElement(By.cssSelector(".infobox"));
             }
             catch (Exception e){
-                logger.error("Não encontrou a infobox, não extrairá informação desse filme");
+                logger.error("Não encontrou a infobox, não extrairá informação desse filme.");
                 continue;
             }
 
@@ -80,10 +84,7 @@ public class NonSemanticNonSemanticCrawlerImpl implements NonSemanticCrawler {
             dto.setResumo(driver.findElement(By.cssSelector(".mw-parser-output p")).getText());
             dto.setUrl(link.getValue());
 
-            List<WebElement> trs = driver.findElement(By.id("mw-content-text"))
-                    .findElement(By.cssSelector(".mw-parser-output"))
-                    .findElement(By.cssSelector(".infobox"))
-                    .findElements(By.tagName("tr"));
+            List<WebElement> trs = driver.findElement(By.id("mw-content-text")).findElement(By.cssSelector(".mw-parser-output")).findElement(By.cssSelector(".infobox")).findElements(By.tagName("tr"));
 
             for(WebElement tr : trs){
                 if(dto.getDuracaoEmMinutos() < 0 && getDuracao(tr) > 0){
@@ -140,7 +141,7 @@ public class NonSemanticNonSemanticCrawlerImpl implements NonSemanticCrawler {
                     Integer.valueOf(th.getText().substring(length - 8, length - 5).trim());
                 }
                 catch (Exception e){
-                    logger.error("Erro ao extrair duração");
+                    logger.error("Erro ao extrair duração do filme.");
                     return -1;
                 }
                 return Integer.valueOf(th.getText().substring(length-8,length-5).trim());

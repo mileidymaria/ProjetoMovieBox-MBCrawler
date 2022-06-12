@@ -8,10 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Set;
 
@@ -27,13 +27,13 @@ public class CrawlerController {
 
     @GetMapping("/get-filmes-ultimos-vinte-anos")
     public ResponseEntity<Set<MovieDto>> getUltimosVinteAnosDeFilme(){
-        logger.info("Recebendo requisição para crawlear os últimos 20 anos de filmes...");
+        logger.info("Recebendo requisição para crawlear os últimos 30 anos de filmes de vários países na wikipedia...");
         return ResponseEntity.ok(nonSemanticCrawler.crawl());
     }
 
-    @GetMapping("/get-series-tv-ultimos-vinte-anos")
-    public ResponseEntity<Collection<TVSerieDto>> getUltimosVinteAnosDeSerie(){
-        logger.info("Recebendo requisição para crawlear os últimos 20 anos de filmes...");
-        return ResponseEntity.ok(semanticCrawler.crawl());
+    @GetMapping("/get-tv-series-by-nationality")
+    public ResponseEntity<Collection<TVSerieDto>> getUltimosVinteAnosDeSerie(@RequestParam @NotBlank @Valid String nationality){
+        logger.info("Recebendo requisição para crawlear series de nacionalidade " + nationality + "...");
+        return ResponseEntity.ok(semanticCrawler.crawl(nationality));
     }
 }

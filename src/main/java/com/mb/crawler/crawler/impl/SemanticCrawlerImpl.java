@@ -1,11 +1,11 @@
 package com.mb.crawler.crawler.impl;
 
 import com.mb.crawler.annotation.Crawler;
-import com.mb.crawler.controller.CrawlerController;
 import com.mb.crawler.crawler.SemanticCrawler;
 import com.mb.crawler.model.dto.TVSerieDto;
 import com.mb.crawler.model.vocabulary.DBO;
 import com.mb.crawler.model.vocabulary.DPB;
+import com.mb.crawler.util.Util;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.*;
 import org.slf4j.Logger;
@@ -19,15 +19,14 @@ import java.util.stream.Collectors;
 @Crawler
 public class SemanticCrawlerImpl implements SemanticCrawler {
     private static final Logger logger = LoggerFactory.getLogger(SemanticCrawlerImpl.class);
-    CharsetEncoder enc = Charset.forName("UTF-8").newEncoder();
-    public static final String BASE_DBPEDIA_URL_STRING = "https://dbpedia.org/resource/List_of_Brazilian_television_series";
+    public static final String BASE_DBPEDIA_URL_STRING = "https://dbpedia.org/resource/List_of_%s_television_series";
 
     @Override
-    public Collection<TVSerieDto> crawl(){
+    public Collection<TVSerieDto> crawl(String nationality){
 
         Collection<TVSerieDto> series = new ArrayList<>();
         Model graph = ModelFactory.createDefaultModel();
-        graph.read(BASE_DBPEDIA_URL_STRING);
+        graph.read(String.format(BASE_DBPEDIA_URL_STRING, Util.capitalize(nationality)));
         List<Statement> triples = graph.listStatements((Resource) null, DBO.WIKI_PAGE_WIKI_LINK, (RDFNode)null).toList();
 
         for(Statement triple : triples){
